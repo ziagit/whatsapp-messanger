@@ -5,13 +5,20 @@
         toggleable="sm"
         type="light"
         variant="light"
-        class="shadow-sm pr-3"
+        class="shadow-none pr-3"
       >
         <b-navbar-toggle target="nav-text-collapse"></b-navbar-toggle>
         <b-navbar-brand>Tingsapp</b-navbar-brand>
         <b-collapse id="nav-text-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-text>{{ currentRoom.name }}</b-nav-text>
+            <b-nav-text
+              >{{ user.name }} :
+
+              <span v-if="currentRoom.user_id == user.id">{{
+                currentRoom.name
+              }}</span>
+              <span v-else>{{ currentRoom.user.name }}</span>
+            </b-nav-text>
           </b-navbar-nav>
         </b-collapse>
         <b-navbar-nav class="ml-auto">
@@ -27,7 +34,7 @@
         </b-navbar-nav>
       </b-navbar>
     </div>
-    <div class="d-flex">
+    <div class="d-flex" style="padding: 0 45px">
       <div>
         <room-selection
           :rooms="chatRooms"
@@ -35,7 +42,7 @@
           v-on:roomchanged="setRoom($event)"
         />
       </div>
-      <div class="container">
+      <div class="container px-0 pt-0">
         <b-card class="shadow-sm border-0">
           <message-container :messages="messages" />
           <input-message :room="currentRoom" v-on:messagesent="getMessages()" />
@@ -44,7 +51,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import MessageContainer from "./messageContainer.vue";
 import InputMessage from "./inputMessage.vue";
@@ -62,7 +68,14 @@ export default {
       currentRoom: [],
       messages: [],
       token: "",
+      user: null,
     };
+  },
+  created() {
+    this.token = localStorage.getItem("token");
+    this.user = JSON.parse(localStorage.getItem("user"));
+    this.getRooms();
+    this.connect();
   },
   watch: {
     currentRoom(val, oldVal) {
@@ -72,21 +85,8 @@ export default {
       this.connect();
     },
   },
-  mounted() {
-    //this.connect();
-  },
+
   methods: {
-    connect() {
-      let vm = this;
-      this.getMessages();
-      Echo.private("chat." + this.currentRoom.id).listen(".chat-event", (e) => {
-        console.log("event: ", e);
-        vm.getMessages();
-      });
-    },
-    disconnect(room) {
-      window.Echo.leave("chat." + room.id);
-    },
     getRooms() {
       axios
         .get("/api/admin/rooms", {
@@ -95,6 +95,7 @@ export default {
           },
         })
         .then((response) => {
+          console.log("roooms: ",response.data)
           this.chatRooms = response.data;
           this.setRoom(response.data[0]);
         })
@@ -102,6 +103,24 @@ export default {
           console.log(error);
         });
     },
+    connect() {
+      let vm = this;
+      this.getMessages();
+      Echo.private("chat." + this.currentRoom.id).listen(".chat-event", (e) => {
+        console.log("event: ", e);
+        vm.getMessages();
+      });
+      var user = JSON.parse(localStorage.getItem("user"));
+      Echo.private("room." + user.id).listen(".room-event", (e) => {
+        console.log("room event: ", e);
+        vm.getRooms();
+      });
+    },
+
+    disconnect(room) {
+      window.Echo.leave("chat." + room.id);
+    },
+
     setRoom(room) {
       this.currentRoom = room;
     },
@@ -134,16 +153,11 @@ export default {
         });
     },
   },
-  created() {
-    this.token = localStorage.getItem("token");
-    this.getRooms();
-    this.connect();
-  },
 };
 </script>
 <style scoped>
 .container {
-  height: calc(100vh - 335px);
+  height: calc(100vh - 141px);
   padding-top: 12px;
 }
 .navbar {

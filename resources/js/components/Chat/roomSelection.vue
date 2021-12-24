@@ -46,27 +46,12 @@ export default {
       this.selected = room;
       this.$emit("roomchanged", this.selected);
     },
-    out() {
-      axios
-        .get("/api/chat/room/logout", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          if (response.status == 200) {
-            localStorage.clear();
-            this.$router.push("/");
-          }
-        });
-    },
     time(date) {
       return formatter.formatDate(date);
     },
   },
   created() {
     this.selected = this.currentRoom;
-    console.log("current room: ", this.currentRoom);
     this.user = JSON.parse(localStorage.getItem("user"));
   },
 };

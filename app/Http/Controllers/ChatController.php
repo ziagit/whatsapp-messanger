@@ -20,7 +20,7 @@ class ChatController extends Controller
                 $newRoom->creator = $user->id;
                 $newRoom->user_id = $request->listener;
                 $newRoom->save();
-                return [
+                return [ 
                     'id'=>$user->id,
                     'name'=>$user->name,
                     'email'=>$user->email,

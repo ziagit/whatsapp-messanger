@@ -16,17 +16,17 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             'name'=>'Admin',
-            'email'=>'admin@tingsapp.com',
+            'email'=>'admin@gmail.com',
             'password'=>Hash::make('12345678'),
         ]);
         DB::table('users')->insert([
             'name'=>'Support 1',
-            'email'=>'support1@tingsapp.com',
+            'email'=>'support1@gmail.com',
             'password'=>Hash::make('12345678'),
         ]);
         DB::table('users')->insert([
             'name'=>'Support 2',
-            'email'=>'support2@tingsapp.com',
+            'email'=>'support2@gmail.com',
             'password'=>Hash::make('12345678'),
         ]);
         DB::table('users')->insert([

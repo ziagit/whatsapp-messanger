@@ -30,7 +30,6 @@ export default {
   data: function () {
     return {
       message: "",
-      token: "",
     };
   },
   methods: {
@@ -38,18 +37,11 @@ export default {
       if (this.message == "") {
         return;
       }
+      console.log("roooooooooooooom id: ",this.room.id)
       axios
-        .post(
-          "/api/chat/room/" + this.room.id + "/message",
-          {
-            message: this.message,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + this.token,
-            },
-          }
-        )
+        .post("chat/room/" + this.room.id + "/message", {
+          message: this.message,
+        })
         .then((response) => {
           if (response.status == 200) {
             this.message = "";
@@ -61,13 +53,11 @@ export default {
         });
     },
   },
-  created() {
-    this.token = localStorage.getItem("token");
-  },
+ 
 };
 </script>
 <style scoped>
-.input-container{
+.input-container {
   border-top: 1px solid #e6e6e6;
   padding-top: 10px;
   display: flex;
@@ -85,7 +75,7 @@ input:focus {
 button {
   min-width: 35px;
 }
-button:hover{
+button:hover {
   color: #ffa500;
 }
 svg {

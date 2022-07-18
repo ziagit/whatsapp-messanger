@@ -31,7 +31,12 @@ class UserSeeder extends Seeder
         ]);
         DB::table('users')->insert([
             'name'=>'Mover A',
-            'email'=>'Mover@gmail.com',
+            'email'=>'mover@gmail.com',
+            'password'=>Hash::make('12345678'),
+        ]);
+        DB::table('users')->insert([
+            'name'=>'Customer A',
+            'email'=>'customer@gmail.com',
             'password'=>Hash::make('12345678'),
         ]);
 
@@ -48,5 +53,9 @@ class UserSeeder extends Seeder
         $mover = User::find(4);
         $user_role = Role::find(3);
         $mover->roles()->attach($user_role);
+
+        $customer = User::find(5);
+        $user_role = Role::find(3);
+        $customer->roles()->attach($user_role);
     }
 }

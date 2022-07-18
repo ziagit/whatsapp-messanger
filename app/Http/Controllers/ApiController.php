@@ -21,14 +21,9 @@ class ApiController extends Controller
         try {
             $user = User::where('email',$data->email)->first();
             if($user){
-                if ($token = jWTAuth::attempt(['email' => $data->email, 'password' => '12345678'])) {
-                    return response()->json($token);
-                }
+                    return response()->json($user);
             }
-            $this->signUp($data);
-            if ($token = jWTAuth::attempt(['email' => $data->email, 'password' => '12345678'])) {
-                return response()->json($token);
-            }
+            return $this->signUp($data);
         } catch (Exception $e) {
             return response()->json($e->getMessage());
         }
@@ -40,7 +35,7 @@ class ApiController extends Controller
         $user->email = $data['email'];
         $user->password = Hash::make('12345678');
         $user->save();
-        $role = Role::where('name', 'User')->first();
+        $role = Role::where('name', $data['role'])->first();
         $user->roles()->attach($role);
         return $user;
     }

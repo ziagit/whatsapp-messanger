@@ -3,29 +3,60 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Model implements AuthenticatableContract
 {
     use  Notifiable;
 
-    public function getJWTIdentifier()
+    //related to guard starting functions
+    public function getAuthIdentifierName()
     {
-       return $this->getKey();
+        return 'name';
     }
-  
+    public function getAuthIdentifier()
+    {
+        return $this->name;
+    }
+    public function getAuthPassword()
+    {
+        return null;
+    }
+    public function getRememberToken()
+    {
+        return null;
+    }
+    public function setRememberToken($value)
+    {
+    }
+    public function getRememberTokenName()
+    {
+    }
+    //end of guard
+
+
+
+
+/*     public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
     public function getJWTCustomClaims()
     {
-       return [];
-    }
+        return [];
+    } */
 
     public function roles()
     {
         return $this->belongsToMany(Role::class);
     }
-    public function rooms(){
+    public function rooms()
+    {
         return $this->hasMany(Room::class);
     }
     /**

@@ -96,7 +96,6 @@ export default {
         console.log("room event: ", e);
         vm.getRooms();
       });
-
     },
     disconnect(room) {
       window.Echo.leave("chat." + room.id);
